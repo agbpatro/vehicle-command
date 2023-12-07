@@ -1,7 +1,7 @@
 all: build
 
 format:
-	git describe --tags --abbrev=0 | sed 's/v//' > pkg/account/version.txt
+	git describe --tags --abbrev=0 | sed 's/v//' > ./pkg/account/version.txt
 	go fmt ./...
 
 test: 
