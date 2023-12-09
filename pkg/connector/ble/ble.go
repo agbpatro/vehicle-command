@@ -1,5 +1,4 @@
 // Package ble implements the vehicle.Connector interface using BLE.
-
 package ble
 
 import (
@@ -77,8 +76,8 @@ func (c *Connection) flush() bool {
 }
 
 func (c *Connection) Close() {
-	c.client.ClearSubscriptions()
-	c.client.CancelConnection()
+	_ = c.client.ClearSubscriptions()
+	_ = c.client.CancelConnection()
 }
 
 func (c *Connection) rx(p []byte) {

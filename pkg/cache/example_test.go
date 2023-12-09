@@ -51,7 +51,10 @@ func Example() {
 			fmt.Printf("Error updating session cache: %s\n", err)
 			return
 		}
-		myCache.ExportToFile(cacheFilename)
+		if err := myCache.ExportToFile(cacheFilename); err != nil {
+			fmt.Printf("Error exporting session cache to file: %s\n", err)
+			return
+		}
 	}()
 
 	// Interact with car

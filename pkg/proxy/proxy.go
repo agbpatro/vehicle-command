@@ -138,6 +138,7 @@ func writeJSONError(w http.ResponseWriter, code int, err error) {
 	w.WriteHeader(code)
 	w.Header().Add("Content-Type", "application/json")
 	jsonBytes = append(jsonBytes, '\n')
+	// nolint:errcheck
 	w.Write(jsonBytes)
 }
 
@@ -195,6 +196,7 @@ func (p *Proxy) forwardRequest(host string, w http.ResponseWriter, req *http.Req
 		}
 		return
 	}
+	// nolint:errcheck
 	defer resp.Body.Close()
 
 	for _, hdr := range connectionHeaders {
@@ -205,7 +207,9 @@ func (p *Proxy) forwardRequest(host string, w http.ResponseWriter, req *http.Req
 		outHeader[name] = value
 	}
 
+	// nolint:errcheck
 	w.WriteHeader(resp.StatusCode)
+	// nolint:errcheck
 	io.Copy(w, resp.Body)
 }
 

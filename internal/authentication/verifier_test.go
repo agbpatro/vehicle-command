@@ -561,7 +561,7 @@ func TestSlidingWindow(t *testing.T) {
 	}
 	tests := []windowTest{
 		// Update should succeed because newCounter is greater than all previous counters.
-		windowTest{
+		{
 			counter:                100,
 			window:                 uint64((1 << 0) | (1 << 5)),
 			newCounter:             101,
@@ -571,7 +571,7 @@ func TestSlidingWindow(t *testing.T) {
 		},
 		// Update should succeed because newCounter is greater than all previous counters.
 		// In this test, some messages were skipped and so the expectedUpdatedWindow shifts further.
-		windowTest{
+		{
 			counter:                100,
 			window:                 uint64((1 << 0) | (1 << 5)),
 			newCounter:             103,
@@ -581,7 +581,7 @@ func TestSlidingWindow(t *testing.T) {
 		},
 		// Update should succeed because newCounter is greater than all previous counters.
 		// In this test, the previous counter doesn't fit in sliding window.
-		windowTest{
+		{
 			counter:                100,
 			window:                 uint64((1 << 0) | (1 << 5)),
 			newCounter:             500,
@@ -590,7 +590,7 @@ func TestSlidingWindow(t *testing.T) {
 			expectedOk:             true,
 		},
 		// Update should succeed because newCounter falls in window but isn't set.
-		windowTest{
+		{
 			counter:                100,
 			window:                 uint64((1 << 0) | (1 << 5)),
 			newCounter:             98,
@@ -599,7 +599,7 @@ func TestSlidingWindow(t *testing.T) {
 			expectedOk:             true,
 		},
 		// Update should fail because newCounter falls in window and is already set.
-		windowTest{
+		{
 			counter:                100,
 			window:                 uint64((1 << 0) | (1 << 5)),
 			newCounter:             99,
@@ -608,7 +608,7 @@ func TestSlidingWindow(t *testing.T) {
 			expectedOk:             false,
 		},
 		// Update should fail because newCounter falls outside of window and freshness cannot be validated.
-		windowTest{
+		{
 			counter:                100,
 			window:                 uint64((1 << 0) | (1 << 5)),
 			newCounter:             3,
@@ -617,7 +617,7 @@ func TestSlidingWindow(t *testing.T) {
 			expectedOk:             false,
 		},
 		// Update should fail because newCounter == counter.
-		windowTest{
+		{
 			counter:                100,
 			window:                 uint64((1 << 0) | (1 << 5)),
 			newCounter:             100,

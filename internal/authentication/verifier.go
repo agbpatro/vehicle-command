@@ -64,10 +64,9 @@ func (v *Verifier) rotateEpochIfNeeded() error {
 		if _, err := rand.Read(v.epoch[:]); err != nil {
 			v.counter = 0xFFFFFFFF
 			return newError(errCodeInternal, "RNG failure")
-		} else {
-			v.timeZero = time.Now()
-			v.counter = 0
 		}
+		v.timeZero = time.Now()
+		v.counter = 0
 	}
 	return nil
 }

@@ -46,6 +46,7 @@ func ImportFromFile(filename string) (*SessionCache, error) {
 	if err != nil {
 		return nil, err
 	}
+	// nolint:errcheck
 	defer file.Close()
 
 	return Import(file)
@@ -65,6 +66,7 @@ func (c *SessionCache) ExportToFile(filename string) error {
 	if err != nil {
 		return err
 	}
+	// nolint:errcheck
 	defer file.Close()
 
 	return c.Export(file)

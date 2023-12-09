@@ -173,6 +173,7 @@ func (a *Account) Get(ctx context.Context, endpoint string) ([]byte, error) {
 	if err != nil {
 		return nil, fmt.Errorf("error fetching %s: %w", endpoint, err)
 	}
+	// nolint:errcheck
 	defer response.Body.Close()
 	if response.StatusCode != http.StatusOK {
 		err := fmt.Errorf("http error when sending command to %s: %s", url, response.Status)

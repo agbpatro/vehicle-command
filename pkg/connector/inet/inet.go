@@ -103,6 +103,7 @@ func SendFleetAPICommand(ctx context.Context, client *http.Client, userAgent, au
 	if err != nil {
 		return nil, &protocol.CommandError{Err: err, PossibleSuccess: false, PossibleTemporary: true}
 	}
+	// nolint:errcheck
 	defer result.Body.Close()
 
 	body = make([]byte, connector.MaxResponseLength+1)

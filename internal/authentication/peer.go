@@ -32,7 +32,10 @@ func (p *Peer) timestamp() uint32 {
 
 // extractMetadata populates metadata.
 func (p *Peer) extractMetadata(meta *metadata, message *universal.RoutableMessage, info sessionInfo, method signatures.SignatureType) error {
-	meta.Add(signatures.Tag_TAG_SIGNATURE_TYPE, []byte{byte(method)})
+	if err := meta.Add(signatures.Tag_TAG_SIGNATURE_TYPE, []byte{byte(method)}); err != nil {
+		// TODO
+		return err
+	}
 
 	// Authenticate domain. Use domain from message because sender might be using BROADCAST.
 	if x, ok := message.ToDestination.GetSubDestination().(*universal.Destination_Domain); ok {
@@ -56,15 +59,21 @@ func (p *Peer) extractMetadata(meta *metadata, message *universal.RoutableMessag
 		return newError(errCodeBadParameter, "out of bounds expiration time")
 	}
 
-	meta.Add(signatures.Tag_TAG_EPOCH, p.epoch[:])
-	meta.AddUint32(signatures.Tag_TAG_EXPIRES_AT, info.GetExpiresAt())
-	meta.AddUint32(signatures.Tag_TAG_COUNTER, info.GetCounter())
+	if err := meta.Add(signatures.Tag_TAG_EPOCH, p.epoch[:]); err != nil {
+		return err
+	}
+	if err := meta.AddUint32(signatures.Tag_TAG_EXPIRES_AT, info.GetExpiresAt()); err != nil {
+		return err
+	}
+	if err := meta.AddUint32(signatures.Tag_TAG_COUNTER, info.GetCounter()); err != nil {
+		return err
+	}
 
 	// For backwards compatibility, message flags are only explicitly added to
 	// the metadata hash if at least one of them is set. (If a MITM
 	// clears these bits, the hashes will not match, as desired).
 	if message.Flags > 0 {
-		meta.AddUint32(signatures.Tag_TAG_FLAGS, message.Flags)
+		return meta.AddUint32(signatures.Tag_TAG_FLAGS, message.Flags)
 	}
 
 	return nil

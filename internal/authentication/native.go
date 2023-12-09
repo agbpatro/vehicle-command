@@ -138,12 +138,13 @@ func (n *NativeECDHKey) Exchange(publicBytes []byte) (Session, error) {
 }
 
 func NewECDHPrivateKey(rng io.Reader) (ECDHPrivateKey, error) {
-	if ecdsaKey, err := ecdsa.GenerateKey(elliptic.P256(), rng); err == nil {
+	ecdsaKey, err := ecdsa.GenerateKey(elliptic.P256(), rng)
+	if err == nil {
 		native := NativeECDHKey{ecdsaKey}
 		return &native, nil
-	} else {
-		return nil, err
 	}
+	return nil, err
+
 }
 
 func LoadExternalECDHKey(filename string) (ECDHPrivateKey, error) {

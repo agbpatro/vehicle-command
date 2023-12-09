@@ -162,7 +162,7 @@ func (c *Command) Usage(name string) {
 }
 
 var commands = map[string]*Command{
-	"unlock": &Command{
+	"unlock": {
 		help:             "Unlock vehicle",
 		requiresAuth:     true,
 		requiresFleetAPI: false,
@@ -170,7 +170,7 @@ var commands = map[string]*Command{
 			return car.Unlock(ctx)
 		},
 	},
-	"lock": &Command{
+	"lock": {
 		help:             "Lock vehicle",
 		requiresAuth:     true,
 		requiresFleetAPI: false,
@@ -178,7 +178,7 @@ var commands = map[string]*Command{
 			return car.Lock(ctx)
 		},
 	},
-	"drive": &Command{
+	"drive": {
 		help:             "Remote start vehicle",
 		requiresAuth:     true,
 		requiresFleetAPI: false,
@@ -186,7 +186,7 @@ var commands = map[string]*Command{
 			return car.RemoteDrive(ctx)
 		},
 	},
-	"climate-on": &Command{
+	"climate-on": {
 		help:             "Turn on climate control",
 		requiresAuth:     true,
 		requiresFleetAPI: false,
@@ -194,7 +194,7 @@ var commands = map[string]*Command{
 			return car.ClimateOn(ctx)
 		},
 	},
-	"climate-off": &Command{
+	"climate-off": {
 		help:             "Turn off climate control",
 		requiresAuth:     true,
 		requiresFleetAPI: false,
@@ -202,12 +202,12 @@ var commands = map[string]*Command{
 			return car.ClimateOff(ctx)
 		},
 	},
-	"climate-set-temp": &Command{
+	"climate-set-temp": {
 		help:             "Set temperature (Celsius)",
 		requiresAuth:     true,
 		requiresFleetAPI: false,
 		args: []Argument{
-			Argument{name: "TEMP", help: "Desired temperature (e.g., 70f or 21c; defaults to Celsius)"},
+			{name: "TEMP", help: "Desired temperature (e.g., 70f or 21c; defaults to Celsius)"},
 		},
 		handler: func(ctx context.Context, acct *account.Account, car *vehicle.Vehicle, args map[string]string) error {
 			var degrees float32
@@ -223,14 +223,14 @@ var commands = map[string]*Command{
 			return car.ChangeClimateTemp(ctx, degrees, degrees)
 		},
 	},
-	"add-key": &Command{
+	"add-key": {
 		help:             "Add PUBLIC_KEY to vehicle whitelist with ROLE and FORM_FACTOR",
 		requiresAuth:     true,
 		requiresFleetAPI: false,
 		args: []Argument{
-			Argument{name: "PUBLIC_KEY", help: "file containing public key (or corresponding private key)"},
-			Argument{name: "ROLE", help: "One of: owner, driver"},
-			Argument{name: "FORM_FACTOR", help: "One of: nfc_card, ios_device, android_device, cloud_key"},
+			{name: "PUBLIC_KEY", help: "file containing public key (or corresponding private key)"},
+			{name: "ROLE", help: "One of: owner, driver"},
+			{name: "FORM_FACTOR", help: "One of: nfc_card, ios_device, android_device, cloud_key"},
 		},
 		handler: func(ctx context.Context, acct *account.Account, car *vehicle.Vehicle, args map[string]string) error {
 			role := strings.ToUpper(args["ROLE"])
@@ -248,14 +248,14 @@ var commands = map[string]*Command{
 			return car.AddKey(ctx, publicKey, role == "OWNER", vcsec.KeyFormFactor(formFactor))
 		},
 	},
-	"add-key-request": &Command{
+	"add-key-request": {
 		help:             "Requset NFC-card approval for a enrolling PUBLIC_KEY with ROLE and FORM_FACTOR",
 		requiresAuth:     false,
 		requiresFleetAPI: false,
 		args: []Argument{
-			Argument{name: "PUBLIC_KEY", help: "file containing public key (or corresponding private key)"},
-			Argument{name: "ROLE", help: "One of: owner, driver"},
-			Argument{name: "FORM_FACTOR", help: "One of: nfc_card, ios_device, android_device, cloud_key"},
+			{name: "PUBLIC_KEY", help: "file containing public key (or corresponding private key)"},
+			{name: "ROLE", help: "One of: owner, driver"},
+			{name: "FORM_FACTOR", help: "One of: nfc_card, ios_device, android_device, cloud_key"},
 		},
 		handler: func(ctx context.Context, acct *account.Account, car *vehicle.Vehicle, args map[string]string) error {
 			role := strings.ToUpper(args["ROLE"])
@@ -277,12 +277,12 @@ var commands = map[string]*Command{
 			return nil
 		},
 	},
-	"remove-key": &Command{
+	"remove-key": {
 		help:             "Remove PUBLIC_KEY from vehicle whitelist",
 		requiresAuth:     true,
 		requiresFleetAPI: false,
 		args: []Argument{
-			Argument{name: "PUBLIC_KEY", help: "file containing public key (or corresponding private key)"},
+			{name: "PUBLIC_KEY", help: "file containing public key (or corresponding private key)"},
 		},
 		handler: func(ctx context.Context, acct *account.Account, car *vehicle.Vehicle, args map[string]string) error {
 			publicKey, err := protocol.LoadPublicKey(args["PUBLIC_KEY"])
@@ -292,13 +292,13 @@ var commands = map[string]*Command{
 			return car.RemoveKey(ctx, publicKey)
 		},
 	},
-	"rename-key": &Command{
+	"rename-key": {
 		help:             "Change the human-readable metadata of PUBLIC_KEY to NAME, MODEL, KIND",
 		requiresAuth:     false,
 		requiresFleetAPI: true,
 		args: []Argument{
-			Argument{name: "PUBLIC_KEY", help: "file containing public key (or corresponding private key)"},
-			Argument{name: "NAME", help: "New human-readable name for the public key (e.g., Dave's Phone)"},
+			{name: "PUBLIC_KEY", help: "file containing public key (or corresponding private key)"},
+			{name: "NAME", help: "New human-readable name for the public key (e.g., Dave's Phone)"},
 		},
 		handler: func(ctx context.Context, acct *account.Account, car *vehicle.Vehicle, args map[string]string) error {
 			publicKey, err := protocol.LoadPublicKey(args["PUBLIC_KEY"])
@@ -308,12 +308,12 @@ var commands = map[string]*Command{
 			return acct.UpdateKey(ctx, publicKey, args["NAME"])
 		},
 	},
-	"get": &Command{
+	"get": {
 		help:             "GET an owner API http ENDPOINT. Hostname will be taken from -config.",
 		requiresAuth:     false,
 		requiresFleetAPI: true,
 		args: []Argument{
-			Argument{name: "ENDPOINT", help: "Fleet API endpoint"},
+			{name: "ENDPOINT", help: "Fleet API endpoint"},
 		},
 		handler: func(ctx context.Context, acct *account.Account, car *vehicle.Vehicle, args map[string]string) error {
 			reply, err := acct.Get(ctx, args["ENDPOINT"])
@@ -324,15 +324,15 @@ var commands = map[string]*Command{
 			return nil
 		},
 	},
-	"post": &Command{
+	"post": {
 		help:             "POST to ENDPOINT the contents of FILE. Hostname will be taken from -config.",
 		requiresAuth:     false,
 		requiresFleetAPI: true,
 		args: []Argument{
-			Argument{name: "ENDPOINT", help: "Fleet API endpoint"},
+			{name: "ENDPOINT", help: "Fleet API endpoint"},
 		},
 		optional: []Argument{
-			Argument{name: "FILE", help: "JSON file to POST"},
+			{name: "FILE", help: "JSON file to POST"},
 		},
 		handler: func(ctx context.Context, acct *account.Account, car *vehicle.Vehicle, args map[string]string) error {
 			var jsonBytes []byte
@@ -356,7 +356,7 @@ var commands = map[string]*Command{
 			return nil
 		},
 	},
-	"list-keys": &Command{
+	"list-keys": {
 		help:             "List public keys enrolled on vehicle",
 		requiresAuth:     false,
 		requiresFleetAPI: false,
@@ -385,7 +385,7 @@ var commands = map[string]*Command{
 			return nil
 		},
 	},
-	"honk": &Command{
+	"honk": {
 		help:             "Honk horn",
 		requiresAuth:     true,
 		requiresFleetAPI: false,
@@ -393,7 +393,7 @@ var commands = map[string]*Command{
 			return car.HonkHorn(ctx)
 		},
 	},
-	"ping": &Command{
+	"ping": {
 		help:             "Ping vehicle",
 		requiresAuth:     true,
 		requiresFleetAPI: false,
@@ -401,19 +401,19 @@ var commands = map[string]*Command{
 			return car.Ping(ctx)
 		},
 	},
-	"flash-lights": &Command{
+	"flash-lights": {
 		help:         "Flash lights",
 		requiresAuth: true,
 		handler: func(ctx context.Context, acct *account.Account, car *vehicle.Vehicle, args map[string]string) error {
 			return car.FlashLights(ctx)
 		},
 	},
-	"charging-set-limit": &Command{
+	"charging-set-limit": {
 		help:             "Set charge limit to PERCENT",
 		requiresAuth:     true,
 		requiresFleetAPI: false,
 		args: []Argument{
-			Argument{name: "PERCENT", help: "Charging limit"},
+			{name: "PERCENT", help: "Charging limit"},
 		},
 		handler: func(ctx context.Context, acct *account.Account, car *vehicle.Vehicle, args map[string]string) error {
 			limit, err := strconv.Atoi(args["PERCENT"])
@@ -423,12 +423,12 @@ var commands = map[string]*Command{
 			return car.ChangeChargeLimit(ctx, int32(limit))
 		},
 	},
-	"charging-set-amps": &Command{
+	"charging-set-amps": {
 		help:             "Set charge current to AMPS",
 		requiresAuth:     true,
 		requiresFleetAPI: false,
 		args: []Argument{
-			Argument{name: "AMPS", help: "Charging current"},
+			{name: "AMPS", help: "Charging current"},
 		},
 		handler: func(ctx context.Context, acct *account.Account, car *vehicle.Vehicle, args map[string]string) error {
 			limit, err := strconv.Atoi(args["AMPS"])
@@ -438,7 +438,7 @@ var commands = map[string]*Command{
 			return car.SetChargingAmps(ctx, int32(limit))
 		},
 	},
-	"charging-start": &Command{
+	"charging-start": {
 		help:             "Start charging",
 		requiresAuth:     true,
 		requiresFleetAPI: false,
@@ -446,7 +446,7 @@ var commands = map[string]*Command{
 			return car.ChargeStart(ctx)
 		},
 	},
-	"charging-stop": &Command{
+	"charging-stop": {
 		help:             "Stop charging",
 		requiresAuth:     true,
 		requiresFleetAPI: false,
@@ -454,12 +454,12 @@ var commands = map[string]*Command{
 			return car.ChargeStop(ctx)
 		},
 	},
-	"charging-schedule": &Command{
+	"charging-schedule": {
 		help:             "Schedule charging to MINS minutes after midnight and enable daily scheduling",
 		requiresAuth:     true,
 		requiresFleetAPI: false,
 		args: []Argument{
-			Argument{name: "MINS", help: "Time after midnight in minutes"},
+			{name: "MINS", help: "Time after midnight in minutes"},
 		},
 		handler: func(ctx context.Context, acct *account.Account, car *vehicle.Vehicle, args map[string]string) error {
 			minutesAfterMidnight, err := strconv.Atoi(args["MINS"])
@@ -471,7 +471,7 @@ var commands = map[string]*Command{
 			return car.ScheduleCharging(ctx, true, chargingTime)
 		},
 	},
-	"charging-schedule-cancel": &Command{
+	"charging-schedule-cancel": {
 		help:             "Cancel scheduled charge start",
 		requiresAuth:     true,
 		requiresFleetAPI: false,
@@ -479,12 +479,12 @@ var commands = map[string]*Command{
 			return car.ScheduleCharging(ctx, false, 0*time.Hour)
 		},
 	},
-	"media-set-volume": &Command{
+	"media-set-volume": {
 		help:             "Set volume",
 		requiresAuth:     true,
 		requiresFleetAPI: false,
 		args: []Argument{
-			Argument{name: "VOLUME", help: "Set volume (0.0-10.0"},
+			{name: "VOLUME", help: "Set volume (0.0-10.0"},
 		},
 		handler: func(ctx context.Context, acct *account.Account, car *vehicle.Vehicle, args map[string]string) error {
 			volume, err := strconv.ParseFloat(args["VOLUME"], 32)
@@ -494,12 +494,12 @@ var commands = map[string]*Command{
 			return car.SetVolume(ctx, float32(volume))
 		},
 	},
-	"software-update-start": &Command{
+	"software-update-start": {
 		help:             "Start software update after DELAY",
 		requiresAuth:     true,
 		requiresFleetAPI: false,
 		args: []Argument{
-			Argument{
+			{
 				name: "DELAY",
 				help: "Time to wait before starting update. Examples: 2h, 10m.",
 			},
@@ -513,7 +513,7 @@ var commands = map[string]*Command{
 			return car.ScheduleSoftwareUpdate(ctx, delay)
 		},
 	},
-	"software-update-cancel": &Command{
+	"software-update-cancel": {
 		help:             "Cancel a pending software update",
 		requiresAuth:     true,
 		requiresFleetAPI: false,
@@ -521,12 +521,12 @@ var commands = map[string]*Command{
 			return car.CancelSoftwareUpdate(ctx)
 		},
 	},
-	"sentry-mode": &Command{
+	"sentry-mode": {
 		help:             "Set sentry mode to STATE ('on' or 'off')",
 		requiresAuth:     true,
 		requiresFleetAPI: false,
 		args: []Argument{
-			Argument{name: "STATE", help: "'on' or 'off'"},
+			{name: "STATE", help: "'on' or 'off'"},
 		},
 		handler: func(ctx context.Context, acct *account.Account, car *vehicle.Vehicle, args map[string]string) error {
 			var state bool
@@ -541,7 +541,7 @@ var commands = map[string]*Command{
 			return car.SetSentryMode(ctx, state)
 		},
 	},
-	"wake": &Command{
+	"wake": {
 		help:             "Wake up vehicle",
 		requiresAuth:     false,
 		requiresFleetAPI: false,
@@ -549,7 +549,7 @@ var commands = map[string]*Command{
 			return car.Wakeup(ctx)
 		},
 	},
-	"trunk-open": &Command{
+	"trunk-open": {
 		help:             "Open vehicle trunk. Note that trunk-close only works on certain vehicle types.",
 		requiresAuth:     true,
 		requiresFleetAPI: false,
@@ -557,7 +557,7 @@ var commands = map[string]*Command{
 			return car.OpenTrunk(ctx)
 		},
 	},
-	"trunk-move": &Command{
+	"trunk-move": {
 		help:             "Toggle trunk open/closed. Closing is only available on certain vehicle types.",
 		requiresAuth:     true,
 		requiresFleetAPI: false,
@@ -565,7 +565,7 @@ var commands = map[string]*Command{
 			return car.ActuateTrunk(ctx)
 		},
 	},
-	"trunk-close": &Command{
+	"trunk-close": {
 		help:             "Closes vehicle trunk. Only available on certain vehicle types.",
 		requiresAuth:     true,
 		requiresFleetAPI: false,
@@ -573,7 +573,7 @@ var commands = map[string]*Command{
 			return car.CloseTrunk(ctx)
 		},
 	},
-	"frunk-open": &Command{
+	"frunk-open": {
 		help:             "Open vehicle frunk. Note that there's no frunk-close command!",
 		requiresAuth:     true,
 		requiresFleetAPI: false,
@@ -581,7 +581,7 @@ var commands = map[string]*Command{
 			return car.OpenFrunk(ctx)
 		},
 	},
-	"charge-port-open": &Command{
+	"charge-port-open": {
 		help:             "Open charge port",
 		requiresAuth:     true,
 		requiresFleetAPI: false,
@@ -589,7 +589,7 @@ var commands = map[string]*Command{
 			return car.OpenChargePort(ctx)
 		},
 	},
-	"charge-port-close": &Command{
+	"charge-port-close": {
 		help:             "Close charge port",
 		requiresAuth:     true,
 		requiresFleetAPI: false,
@@ -597,19 +597,19 @@ var commands = map[string]*Command{
 			return car.CloseChargePort(ctx)
 		},
 	},
-	"autosecure-modelx": &Command{
+	"autosecure-modelx": {
 		help: "Close falcon-wing doors and lock vehicle. Model X only.",
 		handler: func(ctx context.Context, acct *account.Account, car *vehicle.Vehicle, args map[string]string) error {
 			return car.AutoSecureVehicle(ctx)
 		},
 	},
-	"session-info": &Command{
+	"session-info": {
 		help:             "Retrieve session info for PUBLIC_KEY from DOMAIN",
 		requiresAuth:     true,
 		requiresFleetAPI: false,
 		args: []Argument{
-			Argument{name: "PUBLIC_KEY", help: "file containing public key (or corresponding private key)"},
-			Argument{name: "DOMAIN", help: "'vcsec' or 'infotainment'"},
+			{name: "PUBLIC_KEY", help: "file containing public key (or corresponding private key)"},
+			{name: "DOMAIN", help: "'vcsec' or 'infotainment'"},
 		},
 		handler: func(ctx context.Context, acct *account.Account, car *vehicle.Vehicle, args map[string]string) error {
 			// See SeatPosition definition for controlling backrest heaters (limited models).
@@ -633,13 +633,13 @@ var commands = map[string]*Command{
 			return nil
 		},
 	},
-	"seat-heater": &Command{
+	"seat-heater": {
 		help:             "Set seat heater at POSITION to LEVEL",
 		requiresAuth:     true,
 		requiresFleetAPI: false,
 		args: []Argument{
-			Argument{name: "SEAT", help: "<front|2nd-row|3rd-row>-<left|center|right> (e.g., 2nd-row-left)"},
-			Argument{name: "LEVEL", help: "off, low, medium, or high"},
+			{name: "SEAT", help: "<front|2nd-row|3rd-row>-<left|center|right> (e.g., 2nd-row-left)"},
+			{name: "LEVEL", help: "off, low, medium, or high"},
 		},
 		handler: func(ctx context.Context, acct *account.Account, car *vehicle.Vehicle, args map[string]string) error {
 			// See SeatPosition definition for controlling backrest heaters (limited models).
@@ -672,12 +672,12 @@ var commands = map[string]*Command{
 			return car.SetSeatHeater(ctx, spec)
 		},
 	},
-	"steering-wheel-heater": &Command{
+	"steering-wheel-heater": {
 		help:             "Set steering wheel mode to STATE ('on' or 'off')",
 		requiresAuth:     true,
 		requiresFleetAPI: false,
 		args: []Argument{
-			Argument{name: "STATE", help: "'on' or 'off'"},
+			{name: "STATE", help: "'on' or 'off'"},
 		},
 		handler: func(ctx context.Context, acct *account.Account, car *vehicle.Vehicle, args map[string]string) error {
 			var state bool
@@ -692,7 +692,7 @@ var commands = map[string]*Command{
 			return car.SetSteeringWheelHeater(ctx, state)
 		},
 	},
-	"product-info": &Command{
+	"product-info": {
 		help:             "Print JSON product info",
 		requiresAuth:     false,
 		requiresFleetAPI: true,
@@ -705,15 +705,15 @@ var commands = map[string]*Command{
 			return nil
 		},
 	},
-	"auto-seat-and-climate": &Command{
+	"auto-seat-and-climate": {
 		help:             "Turn on automatic seat heating and HVAC",
 		requiresAuth:     true,
 		requiresFleetAPI: false,
 		args: []Argument{
-			Argument{name: "POSITIONS", help: "'L' (left), 'R' (right), or 'LR'"},
+			{name: "POSITIONS", help: "'L' (left), 'R' (right), or 'LR'"},
 		},
 		optional: []Argument{
-			Argument{name: "STATE", help: "'on' (default) or 'off'"},
+			{name: "STATE", help: "'on' (default) or 'off'"},
 		},
 		handler: func(ctx context.Context, acct *account.Account, car *vehicle.Vehicle, args map[string]string) error {
 			var positions []vehicle.SeatPosition

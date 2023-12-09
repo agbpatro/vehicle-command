@@ -130,7 +130,7 @@ func ShouldRetry(err error) bool {
 	return false
 }
 
-// NominalVCSECError indicates the vehicle received and authenticated a command, but could not
+// NominalError indicates the vehicle received and authenticated a command, but could not
 // execute it.
 type NominalError struct {
 	Details error
