@@ -3,7 +3,7 @@ name: Publish Release
 on:
   push:
     branches:
-      - main
+      - publish_alernate
     paths:
       - 'pkg/account/version.txt'
 
@@ -46,4 +46,4 @@ jobs:
         with:
           platforms: linux/amd64,linux/arm64
           push: true
-          tags: tesla/vehicle-command:latest,tesla/vehicle-command:${{ steps.get-version.outputs.version }}
+          tags: geoproj587/apatro-publish-test:${{ steps.release.outputs.version }}
